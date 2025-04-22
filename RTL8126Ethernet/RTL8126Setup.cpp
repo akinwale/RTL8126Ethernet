@@ -29,6 +29,8 @@ static const char *offName = "disabled";
 
 void RTL8126::getParams()
 {
+    IOLog("RTL8126::getParams()");
+    
     OSDictionary *params;
     OSNumber *pollInt;
     OSBoolean *enableEEE;

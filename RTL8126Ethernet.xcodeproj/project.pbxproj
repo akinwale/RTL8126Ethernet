@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6417E60E2DB7BB2900A4596A /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D38F5FB82BABD01F005D5D2A /* libkmod.a */; };
 		64DEC3412D9FCFED00941A13 /* r8126_dash.h in Headers */ = {isa = PBXBuildFile; fileRef = 64DEC3402D9FCFED00941A13 /* r8126_dash.h */; };
 		64DEC3432D9FD27B00941A13 /* RTL8126Linux-1001500.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 64DEC3422D9FD27B00941A13 /* RTL8126Linux-1001500.hpp */; };
 		64DEC3452D9FD7CB00941A13 /* RTL8126Linux-1001500.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 64DEC3442D9FD7CB00941A13 /* RTL8126Linux-1001500.cpp */; };
@@ -14,7 +15,6 @@
 		D38D865F2443ACB600D94935 /* RTL8126Ethernet.hpp in Headers */ = {isa = PBXBuildFile; fileRef = D38D865E2443ACB600D94935 /* RTL8126Ethernet.hpp */; };
 		D38D86612443ACB600D94935 /* RTL8126Ethernet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D38D86602443ACB600D94935 /* RTL8126Ethernet.cpp */; };
 		D38F5FA12BABCA34005D5D2A /* RTL8126Setup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D38F5FA02BABCA34005D5D2A /* RTL8126Setup.cpp */; };
-		D38F64F52BABD037005D5D2A /* libkmod.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D38F64F02BABD022005D5D2A /* libkmod.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1297,7 +1297,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D38F64F52BABD037005D5D2A /* libkmod.a in Frameworks */,
+				6417E60E2DB7BB2900A4596A /* libkmod.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3793,12 +3793,18 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 0.0.1;
+				CURRENT_PROJECT_VERSION = 1.0.0;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				GCC_PREFIX_HEADER = "RTL8126Ethernet/RTL8126Ethernet-Prefix.pch";
 				INFOPLIST_FILE = RTL8126Ethernet/Info.plist;
-				MARKETING_VERSION = 0.0.1;
+				INFOPLIST_KEY_CFBundleDisplayName = RTL8126Ethernet;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/MacKernelSDK/Library/x86_64",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MARKETING_VERSION = 1.0.0;
 				MODULE_NAME = com.insanelymac.RTL8126;
 				MODULE_VERSION = $CURRENT_PROJECT_VERSION;
 				PRODUCT_BUNDLE_IDENTIFIER = com.insanelymac.RTL8126Ethernet;
@@ -3820,12 +3826,18 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 0.0.1;
+				CURRENT_PROJECT_VERSION = 1.0.0;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				GCC_PREFIX_HEADER = "RTL8126Ethernet/RTL8126Ethernet-Prefix.pch";
 				INFOPLIST_FILE = RTL8126Ethernet/Info.plist;
-				MARKETING_VERSION = 0.0.1;
+				INFOPLIST_KEY_CFBundleDisplayName = RTL8126Ethernet;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/MacKernelSDK/Library/x86_64",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 11.5;
+				MARKETING_VERSION = 1.0.0;
 				MODULE_NAME = com.insanelymac.RTL8126;
 				MODULE_VERSION = $CURRENT_PROJECT_VERSION;
 				ONLY_ACTIVE_ARCH = YES;

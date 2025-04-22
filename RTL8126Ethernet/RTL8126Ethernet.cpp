@@ -36,6 +36,8 @@ OSDefineMetaClassAndStructors(RTL8126, super)
 
 bool RTL8126::init(OSDictionary *properties)
 {
+    DebugLog("RTL8126::init() ===>\n");
+    
     bool result;
     
     result = super::init(properties);
@@ -99,6 +101,8 @@ bool RTL8126::init(OSDictionary *properties)
 #endif
     }
     
+    DebugLog("RTL8126::init() <===\n");
+    
 done:
     return result;
 }
@@ -144,6 +148,8 @@ void RTL8126::free()
 
 bool RTL8126::start(IOService *provider)
 {
+    DebugLog("RTL8126::start() ===>\n");
+    
     bool result;
     
     result = super::start(provider);
@@ -221,6 +227,8 @@ bool RTL8126::start(IOService *provider)
     pciDevice->close(this);
     result = true;
     
+    DebugLog("RTL8126::start() <===\n");
+    
 done:
     return result;
 
@@ -250,6 +258,8 @@ error_open:
 
 void RTL8126::stop(IOService *provider)
 {
+    DebugLog("RTL8126::stop() ===>\n");
+    
     UInt32 i;
     
     if (netif) {
@@ -284,6 +294,8 @@ void RTL8126::stop(IOService *provider)
     linuxData.mmio_addr = NULL;
 
     RELEASE(pciDevice);
+    
+    DebugLog("RTL8126::stop() <===\n");
     
     super::stop(provider);
 }
@@ -443,6 +455,8 @@ done:
 
 IOReturn RTL8126::outputStart(IONetworkInterface *interface, IOOptionBits options )
 {
+    DebugLog("RTL8126::outputStart() ===>\n");
+    
     IOPhysicalSegment txSegments[kMaxSegs];
     mbuf_t m;
     RtlTxDesc *desc, *firstDesc;
@@ -581,7 +595,7 @@ IOReturn RTL8126::outputStart(IONetworkInterface *interface, IOOptionBits option
     result = (txNumFreeDesc > (kMaxSegs + 3)) ? kIOReturnSuccess : kIOReturnNoResources;
     
 done:
-    //DebugLog("outputStart() <===\n");
+    DebugLog("outputStart() <===\n");
     
     return result;
 }
@@ -1105,6 +1119,8 @@ void RTL8126::txInterrupt()
     UInt32 nextClosePtr = ReadReg16(HW_CLO_PTR0_8125);
     UInt32 oldDirtyIndex = txDirtyDescIndex;
     UInt32 numDone;
+    
+    DebugLog("RTL8126::txInterrupt() ===>\n");
 
     numDone = ((nextClosePtr - txClosePtr0) & 0xffff);
     
@@ -1129,6 +1145,8 @@ void RTL8126::txInterrupt()
         
         releaseFreePackets();
     }
+    
+    DebugLog("RTL8126::txInterrupt() <===\n");
 }
 
 UInt32 RTL8126::rxInterrupt(IONetworkInterface *interface, uint32_t maxCount, IOMbufQueue *pollQueue, void *context)
@@ -1142,6 +1160,8 @@ UInt32 RTL8126::rxInterrupt(IONetworkInterface *interface, uint32_t maxCount, IO
     UInt32 pktSize;
     UInt32 goodPkts = 0;
     bool replaced;
+    
+    DebugLog("RTL8126::rxInterrupt() ===>\n");
     
     while (!((descStatus1 = OSSwapLittleToHostInt32(desc->opts1)) & DescOwn) && (goodPkts < maxCount)) {
         opts1 = (rxNextDescIndex == kRxLastDesc) ? (RingEnd | DescOwn) : DescOwn;
@@ -1243,6 +1263,9 @@ handle_pkt:
         ++rxNextDescIndex &= kRxDescMask;
         desc = &rxDescArray[rxNextDescIndex];
     }
+    
+    DebugLog("RTL8126::rxInterrupt() <===\n");
+    
     return goodPkts;
 }
 
@@ -1315,6 +1338,8 @@ void RTL8126::checkLinkStatus()
         timerSource->cancelTimeout();
         setLinkDown();
     }
+    
+    DebugLog("RTL8126::checkLinkStatus() <===\n");
 }
 
 void RTL8126::interruptHandler(OSObject *client, IOInterruptEventSource *src, int count)
@@ -1322,9 +1347,11 @@ void RTL8126::interruptHandler(OSObject *client, IOInterruptEventSource *src, in
     UInt32 packets;
     UInt32 status;
     
+    DebugLog("RTL8126::interruptHandler() ===>\n");
+    
     status = ReadReg32(ISR0_8125);
     
-    //DebugLog("interruptHandler: status = 0x%x.\n", status);
+    DebugLog("interruptHandler: status = 0x%x.\n", status);
 
     /* hotplug/major error/no more work/shared irq */
     if ((status == 0xFFFFFFFF) || !status)
@@ -1378,6 +1405,9 @@ void RTL8126::interruptHandler(OSObject *client, IOInterruptEventSource *src, in
         WriteReg32(TIMER_INT0_8125, 0x000);
         intrMask = intrMaskRxTx;
     }
+    
+    DebugLog("RTL8126::interruptHandler() ===>\n");
+    
 done:
     WriteReg32(IMR0_8125, intrMask);
 }
@@ -1385,6 +1415,8 @@ done:
 bool RTL8126::txHangCheck()
 {
     bool deadlock = false;
+    
+    DebugLog("RTL8126::txHangCheck() ===>\n");
     
     if ((txDescDoneCount == txDescDoneLast) && (txNumFreeDesc < kNumTxDesc)) {
         if (++deadlockWarn == kTxCheckTreshhold) {
@@ -1415,6 +1447,9 @@ bool RTL8126::txHangCheck()
     } else {
         deadlockWarn = 0;
     }
+    
+    DebugLog("RTL8126::txHangCheck() <===\n");
+    
     return deadlock;
 }
 
@@ -1422,7 +1457,7 @@ bool RTL8126::txHangCheck()
 
 IOReturn RTL8126::setInputPacketPollingEnable(IONetworkInterface *interface, bool enabled)
 {
-    //DebugLog("setInputPacketPollingEnable() ===>\n");
+    DebugLog("setInputPacketPollingEnable() ===>\n");
 
     if (test_bit(__ENABLED, &stateFlags)) {
         if (enabled) {
@@ -1438,14 +1473,14 @@ IOReturn RTL8126::setInputPacketPollingEnable(IONetworkInterface *interface, boo
     }
     DebugLog("Input polling %s.\n", enabled ? "enabled" : "disabled");
 
-    //DebugLog("setInputPacketPollingEnable() <===\n");
+    DebugLog("setInputPacketPollingEnable() <===\n");
     
     return kIOReturnSuccess;
 }
 
 void RTL8126::pollInputPackets(IONetworkInterface *interface, uint32_t maxCount, IOMbufQueue *pollQueue, void *context )
 {
-    //DebugLog("pollInputPackets() ===>\n");
+    DebugLog("pollInputPackets() ===>\n");
     
     if (test_bit(__POLL_MODE, &stateFlags) &&
         !test_and_set_bit(__POLLING, &stateFlags)) {
@@ -1460,13 +1495,15 @@ void RTL8126::pollInputPackets(IONetworkInterface *interface, uint32_t maxCount,
         if (spareNum < kRxNumSpareMbufs)
             commandGate->runAction(refillAction);
     }
-    //DebugLog("pollInputPackets() <===\n");
+    DebugLog("pollInputPackets() <===\n");
 }
 
 #pragma mark --- hardware specific methods ---
 
 inline void RTL8126::getChecksumResult(mbuf_t m, UInt32 status1, UInt32 status2)
 {
+    DebugLog("RTL8126::getChecksumResult() HW ===>\n");
+
     mbuf_csum_performed_flags_t performed = 0;
     UInt32 value = 0;
 
@@ -1480,6 +1517,8 @@ inline void RTL8126::getChecksumResult(mbuf_t m, UInt32 status1, UInt32 status2)
     }
     if (performed)
         mbuf_set_csum_performed(m, performed, value);
+    
+    DebugLog("RTL8126::getChecksumResult() HW <===\n");
 }
 
 static const char *speed5GName = "5 Gigabit";
@@ -1506,6 +1545,8 @@ void RTL8126::setLinkUp()
     const char *duplexName;
     const char *flowName;
     const char *eeeName;
+ 
+    DebugLog("RTL8126::setLinkUp() HW ===>\n");
     
     eeeName = eeeNames[kEEETypeNo];
 
@@ -1628,10 +1669,13 @@ void RTL8126::setLinkUp()
     netif->startOutputThread();
 
     IOLog("Link up on en%u, %s, %s, %s%s\n", netif->getUnitNumber(), speedName, duplexName, flowName, eeeName);
+    DebugLog("RTL8126::setLinkUp() HW <===\n");
 }
 
 void RTL8126::setLinkDown()
 {
+    DebugLog("RTL8126::setLinkDown() HW ===>\n");
+    
     deadlockWarn = 0;
     needsUpdate = false;
 
@@ -1651,6 +1695,8 @@ void RTL8126::setLinkDown()
     setPhyMedium();
     
     IOLog("Link down on en%u\n", netif->getUnitNumber());
+    
+    DebugLog("RTL8126::setLinkDown() HW <===\n");
 }
 
 void RTL8126::updateStatitics()
@@ -1658,6 +1704,8 @@ void RTL8126::updateStatitics()
     UInt32 sgColl, mlColl;
     UInt32 cmd;
 
+    DebugLog("RTL8126::updateStatistics() HW ===>\n");
+    
     /* Check if a statistics dump has been completed. */
     if (needsUpdate && !(ReadReg32(CounterAddrLow) & CounterDump)) {
         needsUpdate = false;
@@ -1684,10 +1732,14 @@ void RTL8126::updateStatitics()
         WriteReg32(CounterAddrLow, cmd | CounterDump);
         needsUpdate = true;
     }
+    
+    DebugLog("RTL8126::updateStatistics() HW ===>\n");
 }
 
 void RTL8126::timerActionRTL8126(IOTimerEventSource *timer)
 {
+    DebugLog("RTL8126::timerActionRTL8126() HW ===>\n");
+    
 #ifdef DEBUG
     UInt32 rxIntr = etherStats->dot3RxExtraEntry.interrupts - lastRxIntrupts;
     UInt32 txIntr = etherStats->dot3TxExtraEntry.interrupts - lastTxIntrupts;
@@ -1714,6 +1766,7 @@ void RTL8126::timerActionRTL8126(IOTimerEventSource *timer)
 done:
     txDescDoneLast = txDescDoneCount;
     
+    DebugLog("RTL8126::timerActionRTL8126() HW <===\n");
 }
 
 #pragma mark --- miscellaneous functions ---
@@ -1726,6 +1779,8 @@ static inline void prepareTSO4(mbuf_t m, UInt32 *tcpOffset, UInt32 *mss)
     UInt32 csum32 = 6;
     //UInt32 max;
     UInt32 i, il, tl;
+    
+    DebugLog("RTL8126::prepareTSO4() HW ===>\n");
     
     for (i = 0; i < 4; i++) {
         csum32 += ntohs(ip->addr[i]);
@@ -1745,6 +1800,8 @@ static inline void prepareTSO4(mbuf_t m, UInt32 *tcpOffset, UInt32 *mss)
     
     if (*mss > MSS_MAX)
         *mss = MSS_MAX;
+    
+    DebugLog("RTL8126::prepareTSO4() HW <===\n");
 }
 
 static inline void prepareTSO6(mbuf_t m, UInt32 *tcpOffset, UInt32 *mss)
@@ -1755,6 +1812,8 @@ static inline void prepareTSO6(mbuf_t m, UInt32 *tcpOffset, UInt32 *mss)
     UInt32 csum32 = 6;
     UInt32 i, tl;
     //UInt32 max;
+    
+    DebugLog("RTL8126::prepareTSO6() HW ===>\n");
 
     ip6->pay_len = 0;
 
@@ -1775,6 +1834,8 @@ static inline void prepareTSO6(mbuf_t m, UInt32 *tcpOffset, UInt32 *mss)
     
     if (*mss > MSS_MAX)
         *mss = MSS_MAX;
+    
+    DebugLog("RTL8126::prepareTSO6() HW <===\n");
 }
 
 static unsigned const ethernet_polynomial = 0x04c11db7U;
@@ -1782,7 +1843,7 @@ static unsigned const ethernet_polynomial = 0x04c11db7U;
 static inline u32 ether_crc(int length, unsigned char *data)
 {
     int crc = -1;
-    
+        
     while(--length >= 0) {
         unsigned char current_octet = *data++;
         int bit;

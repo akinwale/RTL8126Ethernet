@@ -25,6 +25,8 @@
 
 bool RTL8126::initPCIConfigSpace(IOPCIDevice *provider)
 {
+    DebugLog("RTL8126::initPCIConfigSpace");
+    
     IOByteCount pmCapOffset;
     UInt32 pcieLinkCap;
     UInt16 pcieLinkCtl;
@@ -91,6 +93,8 @@ done:
 
 IOReturn RTL8126::setPowerStateWakeAction(OSObject *owner, void *arg1, void *arg2, void *arg3, void *arg4)
 {
+    DebugLog("RTL8126::setPowerStateWakeAction");
+    
     RTL8126 *ethCtlr = OSDynamicCast(RTL8126, owner);
     IOPCIDevice *dev;
     UInt16 val16;
@@ -112,6 +116,8 @@ IOReturn RTL8126::setPowerStateWakeAction(OSObject *owner, void *arg1, void *arg
 
 IOReturn RTL8126::setPowerStateSleepAction(OSObject *owner, void *arg1, void *arg2, void *arg3, void *arg4)
 {
+    DebugLog("RTL8126::setPowerStateSleepAction");
+    
     RTL8126 *ethCtlr = OSDynamicCast(RTL8126, owner);
     IOPCIDevice *dev;
     UInt16 val16;
@@ -142,6 +148,8 @@ IOReturn RTL8126::setPowerStateSleepAction(OSObject *owner, void *arg1, void *ar
 
 IOReturn RTL8126::identifyChip()
 {
+    DebugLog("RTL8126::identifyChip");
+    
     struct rtl8126_private *tp = &linuxData;
     IOReturn result = kIOReturnSuccess;
     UInt32 reg, val32;
@@ -178,6 +186,8 @@ IOReturn RTL8126::identifyChip()
 
 bool RTL8126::initRTL8126()
 {
+    DebugLog("RTL8126::initRTL8126");
+    
     struct rtl8126_private *tp = &linuxData;
     UInt32 i;
     UInt8 macAddr[MAC_ADDR_LEN];
@@ -560,6 +570,8 @@ void RTL8126::restartRTL8126()
 
 void RTL8126::setupRTL8126()
 {
+    IOLog("RTL8126::setupRTL8126");
+    
     struct rtl8126_private *tp = &linuxData;
     UInt32 i;
     UInt16 mac_ocp_data;
@@ -783,6 +795,8 @@ void RTL8126::setupRTL8126()
 
 void RTL8126::setPhyMedium()
 {
+    IOLog("RTL8126::setPhyMedium");
+    
     struct rtl8126_private *tp = netdev_priv(&linuxData);
     int auto_nego = 0;
     int giga_ctrl = 0;
@@ -952,6 +966,8 @@ void RTL8126::disablePCIOffset99()
 
 void RTL8126::initPCIOffset99()
 {
+    IOLog("RTL8126::initPCIOffset99");
+
     struct rtl8126_private *tp = &linuxData;
     u32 csi_tmp;
 
@@ -1056,6 +1072,8 @@ UInt16 RTL8126::getEEEMode()
 }
 void RTL8126::exitOOB()
 {
+    IOLog("RTL8126::exitOOB");
+    
     struct rtl8126_private *tp = &linuxData;
     UInt16 data16;
     
@@ -1085,6 +1103,8 @@ void RTL8126::exitOOB()
 
 void RTL8126::powerDownPLL()
 {
+    IOLog("RTL8126::powerDownPLL");
+    
     struct rtl8126_private *tp = &linuxData;
     
     tp->check_keep_link_speed = 0;
@@ -1129,6 +1149,8 @@ void RTL8126::powerDownPLL()
 
 void RTL8126::configPhyHardware()
 {
+    IOLog("RTL8126::configPhyHardware");
+    
     struct rtl8126_private *tp = &linuxData;
     u64 flags;
 
@@ -1173,6 +1195,8 @@ void RTL8126::configPhyHardware()
 
 void RTL8126::configPhyHardware8126a1()
 {
+    IOLog("RTL8126::configPhyHardware8126a1");
+    
     struct rtl8126_private *tp = &linuxData;
 
     SetEthPhyOcpBit(tp, 0xA442, BIT_11);
@@ -1183,6 +1207,8 @@ void RTL8126::configPhyHardware8126a1()
 
 void RTL8126::configPhyHardware8126a2()
 {
+    IOLog("RTL8126::configPhyHardware8126a2");
+    
     struct rtl8126_private *tp = &linuxData;
 
     SetEthPhyOcpBit(tp, 0xA442, BIT_11);
@@ -1652,6 +1678,8 @@ void RTL8126::configPhyHardware8126a2()
 
 void RTL8126::configPhyHardware8126a3()
 {
+    DebugLog("RTL8126::configPhyHardware8126a3");
+    
     struct rtl8126_private *tp = &linuxData;
 
     SetEthPhyOcpBit(tp, 0xA442, BIT_11);
